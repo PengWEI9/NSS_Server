@@ -16,20 +16,20 @@ import '@/icons' // icon
 import '@/permission' // permission control
 
 import mqtt from 'mqtt'
-var client = mqtt.connect('ws://localhost:8083/mqtt')
+var client = mqtt.connect('ws://13.210.107.17:8083/mqtt')
 // const client = mqtt.connect('')
 // mqtt连接
 client.on('connect', (e) => {
-  console.log('连接成功:')
+  // console.log('连接成功:')
 })
 
 // 断开发起重连
 client.on('reconnect', (error) => {
-  console.log('正在重连:', error)
+  // console.log('正在重连:', error)
 })
 // 链接异常处理
 client.on('error', (error) => {
-  console.log('连接失败:', error)
+  // console.log('连接失败:', error)
 })
 
 Vue.prototype.$mqttClient = client

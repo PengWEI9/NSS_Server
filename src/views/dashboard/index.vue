@@ -5,7 +5,7 @@
         v-model="search"
         placeholder="Search devices by name or sn"
         clearable
-        style="width:'400px'"
+        style="width:400px"
       />
       <div style="margin:5px">
         <el-checkbox v-model="check1">Camera</el-checkbox>

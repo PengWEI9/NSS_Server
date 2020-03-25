@@ -27,11 +27,9 @@ router.beforeEach(async(to, from, next) => {
       NProgress.done()
     } else {
       const t = store.getters.type
-      console.log('ttttttttt' + t + '???')
       if (t !== '') {
         next()
       } else {
-        console.log('000000000000')
         const info = await store.dispatch('user/getInfo')
         const accessRoutes = await store.dispatch('permission/generateRoutes', info.type)
         // // dynamically add accessible routes
