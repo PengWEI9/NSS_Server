@@ -191,10 +191,10 @@ export default {
         // console.dir(this.deviceDatas)
       }
 
-      for (let i = 0; i < this.deviceDatas.length; i++) {
-        this.deviceDatas[i].state = 0
-        this.$mqttClient.publish(this.deviceDatas[i].sn + 'ctr', 'state=?')
-      }
+      // for (let i = 0; i < this.deviceDatas.length; i++) {
+      //   this.deviceDatas[i].state = 0
+      //   this.$mqttClient.publish(this.deviceDatas[i].sn + 'ctr', 'state=?')
+      // }
     },
     getDevices() {
       this.$store.dispatch('device/getDevices').then(data => {

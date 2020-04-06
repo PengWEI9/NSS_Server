@@ -117,7 +117,16 @@ export default {
         sn: '',
         version: '',
         weight: 0,
-        relays: [{ name: 'S&F+', on: 'ON', off: 'OFF', autoon: 'Auto ON', autooff: 'Auto OFF' }, { name: 'Camera', on: 'OFF', off: 'ON', autoon: 'Auto OFF', autooff: 'Auto ON' }, { name: 'Siren-Control', on: 'OFF', off: 'ON', autoon: 'Auto OFF', autooff: 'Auto ON' }, { name: 'Flood Light-Control', on: 'OFF', off: 'ON', autoon: 'Auto OFF', autooff: 'Auto ON' }, { name: 'Speaker', on: 'OFF', off: 'ON', autoon: 'Auto OFF', autooff: 'Auto ON' }, { name: 'Microphine', on: 'OFF', off: 'ON', autoon: 'Auto OFF', autooff: 'Auto ON' }, { name: 'Solar', on: 'OFF', off: 'ON', autoon: 'Auto OFF', autooff: 'Auto ON' }, { name: 'default', on: 'OFF', off: 'ON', autoon: 'Auto OFF', autooff: 'Auto ON' }]
+        relays: [
+          { name: 'S&F+', on: 'ON', off: 'OFF', autoon: 'Auto OFF', autooff: 'Auto ON' },
+          { name: 'Camera', on: 'OFF', off: 'ON', autoon: 'Auto ON', autooff: 'Auto OFF' },
+          { name: 'Siren-Control', on: 'OFF', off: 'ON', autoon: 'Auto ON', autooff: 'Auto OFF' },
+          { name: 'Flood Light-Control', on: 'OFF', off: 'ON', autoon: 'Auto ON', autooff: 'Auto OFF' },
+          { name: 'Speaker', on: 'OFF', off: 'ON', autoon: 'Auto ON', autooff: 'Auto OFF' },
+          { name: 'Microphine', on: 'OFF', off: 'ON', autoon: 'Auto ON', autooff: 'Auto OFF' },
+          { name: 'Solar', on: 'OFF', off: 'ON', autoon: 'Auto ON', autooff: 'Auto OFF' },
+          { name: 'default', on: 'OFF', off: 'ON', autoon: 'Auto ON', autooff: 'Auto OFF' }
+        ]
       },
       rules: {
         name: [

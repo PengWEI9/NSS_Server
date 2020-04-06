@@ -6,9 +6,9 @@
           {{ device.name }}
         </label>
         <div>
-          <svg-icon icon-class="state" style="font-size:12px;" :style="{'color':state?'yellowgreen':'gray'}" />
+          <svg-icon icon-class="state" style="font-size:12px;" :style="{'color':device.state == 1?'yellowgreen':'gray'}" />
           <label class="sn">
-            {{ state?'online':'offline' }}
+            {{ device.state == 1?'online':'offline' }}
           </label>
           <label class="more">|</label>
           <label class="more">more</label>
@@ -98,15 +98,16 @@ export default {
   watch: {
     search(nv, ov) {
       if (nv !== ov) {
-        this.state = false
+        // this.state = false
         this.deviceData = ''
       }
     }
   },
   mounted() {
+    console.dir(this.device)
     this.$mqttClient.on('message', (topic, message) => {
       if (topic === this.device.sn + 'state') {
-        this.state = true
+        // this.state = true
         this.deviceData = JSON.parse(message.toString())
       }
     })
