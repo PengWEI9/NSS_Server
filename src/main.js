@@ -16,7 +16,7 @@ import '@/icons' // icon
 import '@/permission' // permission control
 
 import mqtt from 'mqtt'
-var client = mqtt.connect('ws://13.210.107.17:8083/mqtt')
+var client = mqtt.connect('ws://182.61.18.191:8083/mqtt')
 // const client = mqtt.connect('')
 // mqtt连接
 client.on('connect', (e) => {

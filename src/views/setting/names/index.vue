@@ -23,6 +23,9 @@
           <el-option label="Flog" value="Flog" />
         </el-select>
       </el-form-item>
+      <el-form-item label="Device ID">
+        <el-input v-model="form.deviceid" placeholder="Device ID" />
+      </el-form-item>
       <el-form-item label="Device Weight">
         <el-input v-model="form.weight" placeholder="Device Weight" type="number" />
       </el-form-item>
@@ -116,6 +119,7 @@ export default {
         name: '',
         sn: '',
         version: '',
+        deviceid: '',
         weight: 0,
         relays: [
           { name: 'S&F+', on: 'ON', off: 'OFF', autoon: 'Auto OFF', autooff: 'Auto ON' },
@@ -152,6 +156,7 @@ export default {
           this.form.sn = this.deviceDatas[i].sn
           this.form.weight = this.deviceDatas[i].weight
           this.form.version = this.deviceDatas[i].version
+          this.form.deviceid = this.deviceDatas[i].deviceid
           this.form.relays = JSON.parse(this.deviceDatas[i].relays)
           break
         }
@@ -175,6 +180,7 @@ export default {
         if (valid) {
           this.$store.dispatch('device/updateDevice', this.form)
             .then(data => {
+              this.getDevices()
               this.$message({
                 type: 'success',
                 message: 'Update success'

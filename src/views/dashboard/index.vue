@@ -73,7 +73,9 @@ export default {
         relays: [{ name: 'S&F+', on: 'ON', off: 'OFF', autoon: 'Auto ON', autooff: 'Auto OFF' }, { name: 'Camera', on: 'OFF', off: 'ON', autoon: 'Auto OFF', autooff: 'Auto ON' }, { name: 'Siren-Control', on: 'OFF', off: 'ON', autoon: 'Auto OFF', autooff: 'Auto ON' }, { name: 'Flood Light-Control', on: 'OFF', off: 'ON', autoon: 'Auto OFF', autooff: 'Auto ON' }, { name: 'Speaker', on: 'OFF', off: 'ON', autoon: 'Auto OFF', autooff: 'Auto ON' }, { name: 'Microphine', on: 'OFF', off: 'ON', autoon: 'Auto OFF', autooff: 'Auto ON' }, { name: 'Solar', on: 'OFF', off: 'ON', autoon: 'Auto OFF', autooff: 'Auto ON' }, { name: 'default', on: 'OFF', off: 'ON', autoon: 'Auto OFF', autooff: 'Auto ON' }]
       },
       detail: false,
-      searchChange: ''
+      searchChange: '',
+      time: 0,
+      timeTask: null
     }
   },
   watch: {
@@ -96,49 +98,78 @@ export default {
     //   this.check1 = nv
       this.searchDevice()
     }
+    // time(nv, ov) {
+    //   if (nv - ov < 4000) {
+    //     clearTimeout(this.timeTask)
+    //     this.timeTask = setTimeout(() => {
+    //       for (let i = 0; i < this.deviceDatas.length; i++) {
+    //         this.deviceDatas[i].state = 0
+    //         this.$mqttClient.publish(this.deviceDatas[i].sn + 'ctr', 'state=?')
+    //       }
+    //     }, 5000)
+    //   } else {
+    //     this.timeTask = setTimeout(() => {
+    //       for (let i = 0; i < this.deviceDatas.length; i++) {
+    //         this.deviceDatas[i].state = 0
+    //         this.$mqttClient.publish(this.deviceDatas[i].sn + 'ctr', 'state=?')
+    //       }
+    //     }, 5000)
+    //   }
+    // }
 
   },
   mounted() {
     this.getDevices()
     this.$mqttClient.on('message', (topic, message) => {
+      const msg = JSON.parse(message.toString())
       for (let i = 0; i < this.realDatas.length; i++) {
         if (this.realDatas[i].sn + 'state' === topic) {
           this.realDatas[i].state = 1
+          this.realDatas[i].output = msg.output
+          this.realDatas[i].auon = msg.auon
+          this.realDatas[i].auoff = msg.auoff
+          this.realDatas[i].lefttime = msg.lefttime
+          this.realDatas[i].vol = msg.vol
           break
         }
       }
       for (let i = 0; i < this.deviceDatas.length; i++) {
         if (this.deviceDatas[i].sn + 'state' === topic) {
           this.deviceDatas[i].state = 1
+          this.deviceDatas[i].output = msg.output
+          this.deviceDatas[i].auon = msg.auon
+          this.deviceDatas[i].auoff = msg.auoff
+          this.deviceDatas[i].lefttime = msg.lefttime
+          this.deviceDatas[i].vol = msg.vol
           break
         }
       }
-      if (topic === this.currentDevice.sn + 'state') {
-        try {
-          this.currentTime = new Date().toLocaleString()
-          const msg = JSON.parse(message.toString())
-          if (typeof msg.vol !== 'undefined') {
-            this.currentVols = msg.vol
-          }
-          if (typeof msg.output !== 'undefined') {
-            this.currentStates = msg.output
-          }
-          if (typeof msg.auon !== 'undefined') {
-            this.currentAuOn = msg.auon
-          }
-          if (typeof msg.auoff !== 'undefined') {
-            this.currentAuOff = msg.auoff
-          }
-          if (typeof msg.lefttime !== 'undefined') {
-            this.currentLeft = msg.lefttime
-          }
-          if (typeof msg.pause !== 'undefined') {
-            this.currentPause = msg.pause
-          }
-        } catch (error) {
-          //
-        }
-      }
+      // if (topic === this.currentDevice.sn + 'state') {
+      //   try {
+      //     this.currentTime = new Date().toLocaleString()
+      //     const msg = JSON.parse(message.toString())
+      //     if (typeof msg.vol !== 'undefined') {
+      //       this.currentVols = msg.vol
+      //     }
+      //     if (typeof msg.output !== 'undefined') {
+      //       this.currentStates = msg.output
+      //     }
+      //     if (typeof msg.auon !== 'undefined') {
+      //       this.currentAuOn = msg.auon
+      //     }
+      //     if (typeof msg.auoff !== 'undefined') {
+      //       this.currentAuOff = msg.auoff
+      //     }
+      //     if (typeof msg.lefttime !== 'undefined') {
+      //       this.currentLeft = msg.lefttime
+      //     }
+      //     if (typeof msg.pause !== 'undefined') {
+      //       this.currentPause = msg.pause
+      //     }
+      //   } catch (error) {
+      //     //
+      //   }
+      // }
     })
   },
   methods: {
@@ -190,7 +221,7 @@ export default {
         this.deviceDatas = temp
         // console.dir(this.deviceDatas)
       }
-
+      this.time = new Date().getTime()
       // for (let i = 0; i < this.deviceDatas.length; i++) {
       //   this.deviceDatas[i].state = 0
       //   this.$mqttClient.publish(this.deviceDatas[i].sn + 'ctr', 'state=?')
@@ -203,14 +234,16 @@ export default {
           // console.dir(data[i])
           const obj = data[i]
           obj.state = 0
+          obj.output = 'xxxxxxxx'
+          obj.auon = 'xxxxxxxx'
+          obj.auoff = 'xxxxxxxx'
+          obj.lefttime = [0, 0, 0, 0, 0, 0, 0, 0]
+          obj.vol = [0, 0, 0, 0]
           temp.push(obj)
         }
         this.realDatas = temp
         this.deviceDatas = temp
         for (let i = 0; i < data.length; i++) {
-          // console.dir(data[i])
-          const obj = data[i]
-          obj.state = 0
           this.$mqttClient.subscribe(data[i].sn + 'state')
           this.$mqttClient.publish(data[i].sn + 'ctr', 'state=?')
         }

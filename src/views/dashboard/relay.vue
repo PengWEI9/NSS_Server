@@ -1,5 +1,5 @@
 <template>
-  <div class="container" :style="{'background':state=='1'?'yellowgreen':'white'}">
+  <div class="container">
     <div class="names">
       <label class="name">{{ relay.name }}</label>
       <label v-show="!getAuto()" class="name" style="color:red;padding-top:5px;font-size:12px">STATE: {{ getState() }}</label>
@@ -7,10 +7,10 @@
     </div>
     <div class="main">
       <div class="main-btn">
-        <button class="btn-off" @click="relayAction(1)">{{ relay.on }}</button>
-        <button class="btn-off" @click="relayAction(0)">{{ relay.off }}</button>
-        <button class="btn-off" :style="{'background':auon == 1?'green':'gray'}" @click="relayAction(2)">{{ relay.autoon }}</button>
-        <button class="btn-off" :style="{'background':auoff == 1?'green':'gray'}" @click="relayAction(6)">{{ relay.autooff }}</button>
+        <button class="btn-off" :style="{'background':state=='1'?'yellowgreen':'gray'}" @click="relayAction(1)">{{ relay.on }}</button>
+        <button class="btn-off" :style="{'background':state=='0'?'yellowgreen':'gray'}" @click="relayAction(0)">{{ relay.off }}</button>
+        <button class="btn-off" :style="{'background':auon == 1?'yellowgreen':'gray'}" @click="relayAction(2)">{{ relay.autoon }}</button>
+        <button class="btn-off" :style="{'background':auoff == 1?'yellowgreen':'gray'}" @click="relayAction(6)">{{ relay.autooff }}</button>
         <button class="btn-off" @click="clear()">CLEAR</button>
       </div>
     </div>

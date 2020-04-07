@@ -13,6 +13,9 @@
           <el-option label="Flog" value="Flog" />
         </el-select>
       </el-form-item>
+      <el-form-item v-show="step==0" label="Device ID" prop="deviceid">
+        <el-input v-model="form.deviceid" placeholder="Device ID" />
+      </el-form-item>
       <el-form-item v-show="step==0" label="Device Weight" prop="weight">
         <el-input v-model="form.weight" placeholder="Device Weight" type="number" />
       </el-form-item>
@@ -112,6 +115,7 @@ export default {
         sn: '',
         version: '',
         weight: 0,
+        deviceid: '',
         relays: [
           { name: 'S&F+', on: 'ON', off: 'OFF', autoon: 'Auto OFF', autooff: 'Auto ON' },
           { name: 'Camera', on: 'OFF', off: 'ON', autoon: 'Auto ON', autooff: 'Auto OFF' },

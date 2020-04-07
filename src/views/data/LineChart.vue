@@ -97,7 +97,9 @@ export default {
         yAxis: {
           axisTick: {
             show: false
-          }
+          },
+          min: 8,
+          max: 15
         },
         legend: {
           data: ['vol1', 'vol2', 'vol3', 'vol4']

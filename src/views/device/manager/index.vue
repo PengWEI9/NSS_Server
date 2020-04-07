@@ -14,6 +14,10 @@
         prop="sn"
       />
       <el-table-column
+        label="Device ID"
+        prop="deviceid"
+      />
+      <el-table-column
         label="Weight"
         prop="weight"
       />
