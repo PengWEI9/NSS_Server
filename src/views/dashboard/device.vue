@@ -17,7 +17,20 @@
       <div class="btn-name">
         <label class="sn">{{ getNames(2).name }}</label>
         <label v-show="!getAuto(2)" class="name" style="color:red;padding-top:5px;font-size:12px">STATE: {{ getState(2) }}</label>
-        <label v-show="getLeft(2) != ''" class="name" style="color:red;padding-top:5px;font-size:12px">LEFT: {{ getLeft(2) }}</label>
+
+        <el-popover
+          v-show="getLeft(2) != ''"
+          v-model="visible1"
+          placement="left"
+          title="Left Time"
+          width="200"
+        >
+          <div class="left-div">
+            <input v-model="currentLeft" class="left-time" placeholder="left time" type="number">
+            <el-button type="primary" size="mini" @click="updateLeft(2)">Update</el-button>
+          </div>
+          <label slot="reference" class="name-left" style="color:red;padding-top:5px;font-size:12px" @click="getCurrentLeft(2)">LEFT: {{ getLeft(2) }}</label>
+        </el-popover>
       </div>
       <div style="width:100%;height:1px;background:#ddd;margin:5px 0px" />
       <div class="btn-relay">
@@ -30,7 +43,19 @@
       <div class="btn-name">
         <label class="sn">{{ getNames(3).name }}</label>
         <label v-show="!getAuto(3)" class="name" style="color:red;padding-top:5px;font-size:12px">STATE: {{ getState(3) }}</label>
-        <label v-show="getLeft(3) != ''" class="name" style="color:red;padding-top:5px;font-size:12px">LEFT: {{ getLeft(3) }}</label>
+        <el-popover
+          v-show="getLeft(3) != ''"
+          v-model="visible2"
+          placement="left"
+          title="Left Time"
+          width="200"
+        >
+          <div class="left-div">
+            <input v-model="currentLeft" class="left-time" placeholder="left time" type="number">
+            <el-button type="primary" size="mini" @click="updateLeft(3)">Update</el-button>
+          </div>
+          <label slot="reference" class="name-left" style="color:red;padding-top:5px;font-size:12px" @click="getCurrentLeft(3)">LEFT: {{ getLeft(3) }}</label>
+        </el-popover>
       </div>
       <div style="width:100%;height:1px;background:#ddd;margin:5px 0px" />
       <div class="btn-relay">
@@ -87,7 +112,10 @@ export default {
       on2: false,
       off2: false,
       autoOn2: false,
-      autoOff2: false
+      autoOff2: false,
+      currentLeft: 0,
+      visible1: false,
+      visible2: false
     }
   },
   methods: {
@@ -155,6 +183,9 @@ export default {
       } else {
         return ''
       }
+    },
+    getCurrentLeft(index) {
+      this.currentLeft = this.device.lefttime[index]
     },
     getOn1() {
       if (this.device === '') {
@@ -234,6 +265,13 @@ export default {
         return true
       } else {
         return false
+      }
+    },
+    updateLeft(index) {
+      this.visible1 = false
+      this.visible2 = false
+      if (!isNaN(this.currentLeft) && parseInt(this.currentLeft) >= 0) {
+        this.$mqttClient.publish(this.device.sn + 'ctr', 'lefttime' + (index + 1) + '=' + (parseInt(this.currentLeft) + parseInt(this.device.ptime[index]) - parseInt(this.device.lefttime[index])))
       }
     }
   }
@@ -340,5 +378,28 @@ export default {
 }
 .btn-off:active {
   background: #606060;
+}
+
+.name-left {
+  font-size: 14px;
+  color: black;
+  padding: 0px 4px;
+  margin-left: 10px;
+  text-decoration: underline;
+  // max-width: 140px;
+  word-break: break-all;white-space: normal;
+}
+.left-time{
+  border-radius: 4px;
+  border: 1px solid #bbb;
+  padding: 6px;
+  width: 80px;
+  font-size: 10px;
+}
+.left-div{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
 </style>

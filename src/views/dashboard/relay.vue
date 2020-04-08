@@ -3,7 +3,19 @@
     <div class="names">
       <label class="name">{{ relay.name }}</label>
       <label v-show="!getAuto()" class="name" style="color:red;padding-top:5px;font-size:12px">STATE: {{ getState() }}</label>
-      <label v-show="getLeft() != ''" class="name" style="color:red;padding-top:5px;font-size:12px">LEFT: {{ getLeft() }}</label>
+      <el-popover
+        v-show="getLeft() != ''"
+        v-model="visible"
+        placement="left"
+        title="Left Time"
+        width="200"
+      >
+        <div class="left-div">
+          <input v-model="currentLeft" class="left-time" placeholder="left time" type="number">
+          <el-button type="primary" size="mini" @click="updateLeft()">Update</el-button>
+        </div>
+        <label slot="reference" class="name-left" style="color:red;padding-top:5px;font-size:12px" @click="getCurrentLeft()">LEFT: {{ getLeft() }}</label>
+      </el-popover>
     </div>
     <div class="main">
       <div class="main-btn">
@@ -14,7 +26,6 @@
         <button class="btn-off" @click="clear()">CLEAR</button>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -45,6 +56,10 @@ export default {
       type: Number,
       default: 0
     },
+    ptime: {
+      type: Number,
+      default: 0
+    },
     index: {
       type: Number,
       default: 0
@@ -53,6 +68,8 @@ export default {
   data() {
     return {
       // isAuto: false
+      currentLeft: 0,
+      visible: false
     }
   },
   methods: {
@@ -85,6 +102,9 @@ export default {
         return ''
       }
     },
+    getCurrentLeft() {
+      this.currentLeft = this.left
+    },
     clear() {
       const cmd = 'clear' + (this.index + 1)
       this.$mqttClient.publish(this.sn + 'ctr', cmd)
@@ -100,6 +120,12 @@ export default {
         }
       }
       this.$mqttClient.publish(this.sn + 'ctr', cmd)
+    },
+    updateLeft() {
+      this.visible = false
+      if (!isNaN(this.currentLeft) && parseInt(this.currentLeft) >= 0) {
+        this.$mqttClient.publish(this.sn + 'ctr', 'lefttime' + (this.index + 1) + '=' + (parseInt(this.currentLeft) + this.ptime - this.left))
+      }
     }
   }
 }
@@ -173,6 +199,15 @@ export default {
   // max-width: 140px;
   word-break: break-all;white-space: normal;
 }
+.name-left {
+  font-size: 14px;
+  color: black;
+  padding: 0px 4px;
+  margin-left: 10px;
+  text-decoration: underline;
+  // max-width: 140px;
+  word-break: break-all;white-space: normal;
+}
 .div-btn{
   display: flex;
   flex-direction: row;
@@ -199,5 +234,18 @@ export default {
 }
 .clear:active{
   color: blue;
+}
+.left-time{
+  border-radius: 4px;
+  border: 1px solid #bbb;
+  padding: 6px;
+  width: 80px;
+  font-size: 10px;
+}
+.left-div{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
 </style>

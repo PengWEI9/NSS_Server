@@ -7,11 +7,19 @@
         clearable
         style="width:400px"
       />
-      <div style="margin:5px">
+      <div style="margin-left:20px">
         <el-checkbox v-model="check1">Camera</el-checkbox>
         <el-checkbox v-model="check2">Flog</el-checkbox>
         <el-checkbox v-model="check3">Online</el-checkbox>
         <el-checkbox v-model="check4">Offline</el-checkbox>
+        <el-checkbox v-model="check5" />
+        <select v-model="selectVol" class="selector">
+          <option value="0">VOL1</option>
+          <option value="1">VOL2</option>
+          <option value="2">VOL3</option>
+          <option value="3">VOL4</option>
+        </select>
+        <input v-model="volValue" class="vol-value">
       </div>
     </div>
     <div v-show="getClient()" class="search-div-mobile">
@@ -26,6 +34,16 @@
         <el-checkbox v-model="check2" style="width:50px">Flog</el-checkbox>
         <el-checkbox v-model="check3" style="width:50px">Online</el-checkbox>
         <el-checkbox v-model="check4" style="width:50px">Offline</el-checkbox>
+      </div>
+      <div style="padding:5px;display:felx;">
+        <el-checkbox v-model="check5" />
+        <select v-model="selectVol" class="selector">
+          <option value="0">VOL1</option>
+          <option value="1">VOL2</option>
+          <option value="2">VOL3</option>
+          <option value="3">VOL4</option>
+        </select>
+        <input v-model="volValue" class="vol-value">
       </div>
     </div>
     <el-row :span="24" :gutter="4">
@@ -66,6 +84,7 @@ export default {
       check2: false,
       check3: false,
       check4: false,
+      check5: false,
       currentDevice: {
         sn: '',
         state: false,
@@ -75,7 +94,9 @@ export default {
       detail: false,
       searchChange: '',
       time: 0,
-      timeTask: null
+      timeTask: null,
+      volValue: 0,
+      selectVol: '0'
     }
   },
   watch: {
@@ -95,6 +116,10 @@ export default {
       this.searchDevice()
     },
     check4(nv, ov) {
+    //   this.check1 = nv
+      this.searchDevice()
+    },
+    check5(nv, ov) {
     //   this.check1 = nv
       this.searchDevice()
     }
@@ -141,41 +166,16 @@ export default {
           this.deviceDatas[i].auoff = msg.auoff
           this.deviceDatas[i].lefttime = msg.lefttime
           this.deviceDatas[i].vol = msg.vol
+          this.deviceDatas[i].ptime = msg.ptime
           break
         }
       }
-      // if (topic === this.currentDevice.sn + 'state') {
-      //   try {
-      //     this.currentTime = new Date().toLocaleString()
-      //     const msg = JSON.parse(message.toString())
-      //     if (typeof msg.vol !== 'undefined') {
-      //       this.currentVols = msg.vol
-      //     }
-      //     if (typeof msg.output !== 'undefined') {
-      //       this.currentStates = msg.output
-      //     }
-      //     if (typeof msg.auon !== 'undefined') {
-      //       this.currentAuOn = msg.auon
-      //     }
-      //     if (typeof msg.auoff !== 'undefined') {
-      //       this.currentAuOff = msg.auoff
-      //     }
-      //     if (typeof msg.lefttime !== 'undefined') {
-      //       this.currentLeft = msg.lefttime
-      //     }
-      //     if (typeof msg.pause !== 'undefined') {
-      //       this.currentPause = msg.pause
-      //     }
-      //   } catch (error) {
-      //     //
-      //   }
-      // }
     })
   },
   methods: {
     searchDevice() {
       this.searchChange = Math.random() + ''
-      if (this.search === '' && this.check1 === false && this.check2 === false && this.check3 === false && this.check4 === false) {
+      if (this.search === '' && this.check1 === false && this.check2 === false && this.check3 === false && this.check4 === false && this.check5 === false) {
         this.deviceDatas = this.realDatas
       } else {
         const temp = []
@@ -211,7 +211,14 @@ export default {
                 // this.$mqttClient.publish(this.realDatas[i].sn + 'ctr', 'state=?')
               }
             }
-            if (this.check1 === false && this.check2 === false && this.check3 === false && this.check4 === false) {
+            if (this.check5 === true) {
+              if (!isNaN(this.volValue)) {
+                if (this.realDatas[i].vol[parseInt(this.selectVol)] < this.volValue) {
+                  temp.push(this.realDatas[i])
+                }
+              }
+            }
+            if (this.check1 === false && this.check2 === false && this.check3 === false && this.check4 === false && this.check5 === false) {
             //   this.realDatas[i].state = 0
               temp.push(this.realDatas[i])
             //   this.$mqttClient.publish(this.realDatas[i].sn + 'ctr', 'state=?')
@@ -238,6 +245,7 @@ export default {
           obj.auon = 'xxxxxxxx'
           obj.auoff = 'xxxxxxxx'
           obj.lefttime = [0, 0, 0, 0, 0, 0, 0, 0]
+          obj.ptime = [0, 0, 0, 0, 0, 0, 0, 0]
           obj.vol = [0, 0, 0, 0]
           temp.push(obj)
         }
@@ -279,5 +287,20 @@ export default {
         align-items: center;
         justify-content: flex-start;
         padding: 5px;
+    }
+    .selector{
+      border: 0px;
+      border-radius: 0px;
+      font-size: 10px;
+      padding: 0px 5px;
+      background: white;
+    }
+    .vol-value{
+      border: 1px solid #bbb;
+      margin-left: 10px;
+      font-size: 10px;
+      border-radius: 2px;
+      padding-left: 5px;
+      width: 50px;
     }
 </style>

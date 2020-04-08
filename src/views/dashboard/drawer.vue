@@ -24,6 +24,7 @@
         :auon="currentAuOn.substring(index,index+1)"
         :auoff="currentAuOff.substring(index,index+1)"
         :left="currentLeft[index]"
+        :ptime="currentPtime[index]"
         :index="index"
       />
     </div>
@@ -54,10 +55,11 @@ export default {
       relays: [],
       titles: ['Vol1', 'Vol2', 'Vol3', 'Vol4'],
       currentVols: [0, 0, 0, 0],
-      currentStates: '00000000',
-      currentAuOn: '00000000',
-      currentAuOff: '00000000',
-      currentLeft: [0, 0, 0, 0, 0, 0, 0, 0]
+      currentStates: 'xxxxxxxx',
+      currentAuOn: 'xxxxxxxx',
+      currentAuOff: 'xxxxxxxx',
+      currentLeft: [0, 0, 0, 0, 0, 0, 0, 0],
+      currentPtime: [0, 0, 0, 0, 0, 0, 0, 0]
     }
   },
   watch: {
@@ -89,6 +91,9 @@ export default {
           }
           if (info.lefttime !== 'undefined') {
             this.currentLeft = info.lefttime
+          }
+          if (info.ptime !== 'undefined') {
+            this.currentPtime = info.ptime
           }
         } catch (e) {
           //
